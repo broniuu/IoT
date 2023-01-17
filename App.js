@@ -6,7 +6,6 @@
  */
 
 import React, {useState} from 'react';
-import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -19,21 +18,46 @@ import {
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Devices from "./components/Devices";
+import Devices from './components/Devices';
+import NewDevice from './components/NewDevice';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
+const DevicesStack = createNativeStackNavigator();
+function DevicesStackScreen({route, navigation}) {
+  const [devices, setDevices] = useState(route.params.devices);
+  return (
+    <DevicesStack.Navigator>
+      <DevicesStack.Screen
+        name="Devices"
+        component={Devices}
+        initialParams={{devices: devices}}
+      />
+      <DevicesStack.Screen name="NewDevice" component={NewDevice} />
+    </DevicesStack.Navigator>
+  );
+}
 const Tab = createBottomTabNavigator();
 
-function App(): JSX.Element {
-  let items = [];
+function App() {
+  let devices = [
+    {id: 1, name: 'Lampa', roomName: 'Kuchnia'},
+    {id: 2, name: 'Roleta 1', roomName: 'Salon'},
+    {id: 3, name: 'Roleta 2', roomName: 'Salon'},
+    {id: 4, name: 'Lampa', roomName: 'Kuchnia'},
+    {id: 5, name: 'Roleta 1', roomName: 'Salon'},
+    {id: 6, name: 'Roleta 2', roomName: 'Salon'},
+    {id: 7, name: 'Lampa', roomName: 'Kuchnia'},
+    {id: 8, name: 'Roleta 1', roomName: 'Salon'},
+    {id: 9, name: 'Roleta 2', roomName: 'Salon'},
+  ];
+  console.log(devices);
   return (
     <NavigationContainer>
       <Tab.Navigator screenOptions={{headerShown: false}}>
-        <Tab.Screen name="Devices" component={Devices} initialParams={items = items}/>
-        <Tab.Screen name="Settings" component={SettingsStackScreen} />
+        <Tab.Screen
+          name="DevicesStackScreen"
+          component={DevicesStackScreen}
+          initialParams={{devices: devices}}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );
